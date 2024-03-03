@@ -1,0 +1,24 @@
+{
+  "name": "briefing",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/node-telegram-bot-api": "^0.64.3",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.3.0",
+    "cheerio": "^1.0.0-rc.12",
+    "node-telegram-bot-api": "^0.64.0",
+    "puppeteer-core": "^22.3.0"
+  },
+  "main": "dist/functions/*.js"
+}
