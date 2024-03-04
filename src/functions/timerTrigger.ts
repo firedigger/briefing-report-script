@@ -7,6 +7,6 @@ export async function timerTrigger(myTimer: Timer, context: InvocationContext): 
 
 if (process.env.AZURE_FUNCTIONS_ENVIRONMENT !== 'Development')
     app.timer('timerTrigger', {
-        schedule: '0 0 6 * * 1-5',
+        schedule: '0 0 5 * * 1-5',
         handler: timerTrigger
     });
