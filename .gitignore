@@ -25,6 +25,8 @@ local.settings.json
 node_modules
 dist
 cache
+page.html
+snapshot.txt
 
 # Local python packages
 .python_packages/

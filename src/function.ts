@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 import TelegramBot from 'node-telegram-bot-api';
 import { promises as fs, existsSync } from 'fs';
 import puppeteer from 'puppeteer-core';
+import { translate } from '@vitalets/google-translate-api';
 
 function wordWrap(text: string, maxWidth: number): string {
     const words = text.split(' ');
@@ -77,10 +78,11 @@ async function scrapeAndSend(url: string, selector: string, chatId: string, file
         const data = await fetchAndSavePage(url, filePath);
         const $ = cheerio.load(data);
         const text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
+        const { text: translatedText } = await translate(text, { to: 'ru' });
         if (process.env.AZURE_FUNCTIONS_ENVIRONMENT === 'Development')
-            await fs.writeFile('snapshot.txt', text, 'utf8');
+            await fs.writeFile('snapshot.txt', translatedText, 'utf8');
         await bot.sendMessage(chatId, "Приветствую, новый отчёт за " + new Date().toLocaleDateString());
-        const parts = splitMessage(text, 4096);
+        const parts = splitMessage(translatedText, 4096);
         for (const part of parts) {
             await bot.sendMessage(chatId, part);
         }
