@@ -78,6 +78,8 @@ async function scrapeAndSend(url: string, selector: string, chatId: string, file
         const data = await fetchAndSavePage(url, filePath);
         const $ = cheerio.load(data);
         const text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
+        if (!text)
+            throw new Error('No data found');
         //const { text: translatedText } = await translate(text, { to: 'ru' });
         if (process.env.AZURE_FUNCTIONS_ENVIRONMENT === 'Development')
             await fs.writeFile('snapshot.txt', text, 'utf8');
