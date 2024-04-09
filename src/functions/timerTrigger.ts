@@ -2,7 +2,7 @@ import { app, InvocationContext, Timer } from '@azure/functions';
 import { trigger } from '../function';
 
 export async function timerTrigger(myTimer: Timer, context: InvocationContext): Promise<void> {
-    await trigger();
+    await trigger(false, context);
 }
 
 if (process.env.AZURE_FUNCTIONS_ENVIRONMENT !== 'Development')

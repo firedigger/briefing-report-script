@@ -2,7 +2,7 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/fu
 import { trigger } from '../function';
 
 export async function httpTrigger(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    await trigger(true);
+    await trigger(true, context);
     return {
         status: 200,
         body: 'OK',
