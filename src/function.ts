@@ -72,23 +72,18 @@ async function fetchAndSavePage(url: string, filePath: string): Promise<string> 
 }
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_KEY!, { polling: false });
 const REPORT_CHAT_ID = '44284808';
-const RETRIES = 3;
-const RETRY_DELAY = 5 * 60 * 1000;
 
 async function scrapeAndSend(url: string, selector: string, chatId: string, filePath: string = 'page.html', context: InvocationContext) {
     try {
         context.log('Executing in ', process.env.AZURE_FUNCTIONS_ENVIRONMENT);
-        let text = '';
-        for (let i = 0; i < RETRIES && !text; ++i) {
-            const data = await fetchAndSavePage(url, filePath);
-            context.log('Page fetched', data.length);
-            const $ = cheerio.load(data);
-            context.log('Cheerio loaded with content', $(selector).text().length);
-            text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
-            if (text)
-                break;
-            else
-                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        const data = await fetchAndSavePage(url, filePath);
+        context.log('Page fetched', data.length);
+        const $ = cheerio.load(data);
+        context.log('Cheerio loaded with content', $(selector).text().length);
+        let text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
+        if (!text) {
+            await bot.sendMessage(REPORT_CHAT_ID, "Failed to fetch the page");
+            return;
         }
         if (process.env.AZURE_FUNCTIONS_ENVIRONMENT === 'Development')
             await fs.writeFile('snapshot.txt', text, 'utf8');

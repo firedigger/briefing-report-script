@@ -8,8 +8,15 @@
       }
     }
   },
+  "functionTimeout": "00:10:00",
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[4.*, 5.0.0)"
+  },
+  "retry": {
+    "strategy": "exponentialBackoff",
+    "maxRetryCount": 3,
+    "minimumInterval": "00:01:00",
+    "maximumInterval": "00:02:00"
   }
 }
