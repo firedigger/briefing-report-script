@@ -80,10 +80,9 @@ async function scrapeAndSend(url: string, selector: string, chatId: string, file
         context.log('Page fetched', data.length);
         const $ = cheerio.load(data);
         context.log('Cheerio loaded with content', $(selector).text().length);
-        let text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
+        const text = wordWrap($(selector).text().replace(/(\s*\n\s*)+/g, '\n').replace(/ {2,}/g, ' ').trim(), 64);
         if (!text) {
-            await bot.sendMessage(REPORT_CHAT_ID, "Failed to fetch the page");
-            return;
+            throw new Error('Failed to fetch the page');
         }
         if (process.env.AZURE_FUNCTIONS_ENVIRONMENT === 'Development')
             await fs.writeFile('snapshot.txt', text, 'utf8');
